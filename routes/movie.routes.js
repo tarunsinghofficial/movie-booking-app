@@ -11,12 +11,16 @@ res: response from server to client
 
 */
 
-const MovieController = require("../controllers/movie.controller").createMovie;
+const MovieController = require("../controllers/movie.controller");
 
 const routes = (app) => {
   // routes function takes exporess app object as parameter
 
-  app.post("/mba/api/v1/movies", MovieController);
+  app.post("/mba/api/v1/movies", MovieController.createMovie);
+  app.get("/mba/api/v1/movies/:id", MovieController.getMovie);
+  app.get("/mba/api/v1/movies", MovieController.getAllMovies);
+  app.put("/mba/api/v1/movies/:id", MovieController.updateMovie);
+  app.delete("/mba/api/v1/movies/:id", MovieController.deleteMovie);
 };
 
 module.exports = routes;
