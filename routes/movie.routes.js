@@ -23,9 +23,10 @@ const routes = (app) => {
     MovieController.createMovie
   );
   app.get("/mba/api/v1/movies/:id", MovieController.getMovie);
-  app.get("/mba/api/v1/movies", MovieController.getAllMovies);
   app.put("/mba/api/v1/movies/:id", MovieController.updateMovie);
   app.delete("/mba/api/v1/movies/:id", MovieController.deleteMovie);
+
+  app.get("/mba/api/v1/movies", MovieController.getMovies);
 };
 
 module.exports = routes;

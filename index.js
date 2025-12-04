@@ -8,10 +8,12 @@ const app = express(); // express app object
 app.use(express.json());
 
 const MovieRoutes = require("./routes/movie.routes");
+const TheatreRoutes = require("./routes/theatre.routes");
 
 const PORT = process.env.PORT || 3000;
 
 MovieRoutes(app); // invoking the routes function and passing app object
+TheatreRoutes(app);
 
 app.listen(PORT, async () => {
   console.log(`Server is Running on ${PORT}`);

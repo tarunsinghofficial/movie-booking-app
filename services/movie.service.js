@@ -14,4 +14,21 @@ const getMovieById = async (id) => {
   return movie;
 };
 
-module.exports = { getMovieById };
+const fetchMovies = async (filter) => {
+  let query = {};
+
+  if (filter.name) {
+    query.name = filter.name;
+  }
+
+  let movies = await Movie.find(query);
+  if (!movies) {
+    return {
+      err: "MOVIES_NOT_FOUND",
+      code: 404,
+    };
+  }
+  return movies;
+};
+
+module.exports = { getMovieById, fetchMovies };

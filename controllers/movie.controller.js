@@ -86,15 +86,6 @@ const getMovie = async (req, res) => {
   }
 };
 
-const getAllMovies = async (req, res) => {
-  try {
-    const movies = await Movie.find({});
-    return res.status(200).json(successResponseBody);
-  } catch (error) {
-    return res.status(500).json(errResponseBody);
-  }
-};
-
 const updateMovie = async (req, res) => {
   try {
     const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
@@ -165,10 +156,33 @@ const deleteMovie = async (req, res) => {
   }
 };
 
+// we will be using a service function to handle the search logic
+const getMovies = async (req, res) => {
+  try {
+    const movies = await movieService.fetchMovies(req.query);
+    if (movies.err) {
+      return res.status(movies.code).json({
+        success: false,
+        message: movies.err,
+        data: {},
+        error: {},
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Movies fetched successfully",
+      data: movies,
+      error: {},
+    });
+  } catch (error) {
+    return res.status(500).json(errResponseBody);
+  }
+};
+
 module.exports = {
   createMovie,
   updateMovie,
   getMovie,
-  getAllMovies,
+  getMovies,
   deleteMovie,
 };
