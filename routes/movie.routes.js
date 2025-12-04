@@ -12,11 +12,16 @@ res: response from server to client
 */
 
 const MovieController = require("../controllers/movie.controller");
+const MovieMiddlewares = require("../middlewares/movie.middleware");
 
 const routes = (app) => {
   // routes function takes exporess app object as parameter
 
-  app.post("/mba/api/v1/movies", MovieController.createMovie);
+  app.post(
+    "/mba/api/v1/movies",
+    MovieMiddlewares.validateMovieCreateRequest,
+    MovieController.createMovie
+  );
   app.get("/mba/api/v1/movies/:id", MovieController.getMovie);
   app.get("/mba/api/v1/movies", MovieController.getAllMovies);
   app.put("/mba/api/v1/movies/:id", MovieController.updateMovie);

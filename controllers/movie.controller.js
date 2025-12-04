@@ -8,35 +8,81 @@ const {
 const createMovie = async (req, res) => {
   try {
     const movie = await Movie.create(req.body);
-    return res.status(201).json(successResponseBody);
+    return res.status(201).json({
+      success: true,
+      message: "Movie created successfully",
+      data: movie,
+      error: {},
+    });
   } catch (error) {
-    console.log("Error in creating movie", error);
+    console.log("Error in creating movie:", error);
 
     // Handle validation errors
     if (error.name === "ValidationError") {
-      return res.status(400).json(errResponseBody);
+      const validationErrors = {};
+      Object.keys(error.errors).forEach((key) => {
+        validationErrors[key] = error.errors[key].message;
+      });
+
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        data: {},
+        error: {
+          type: "ValidationError",
+          fields: validationErrors,
+        },
+      });
     }
 
     // Handle other errors
-    return res.status(500).json(errResponseBody);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error while creating movie",
+      data: {},
+      error: {},
+    });
   }
 };
 
 const getMovie = async (req, res) => {
   try {
-    //const movie = await Movie.findById(req.params.id); // if the id is not valid, it should verify
-
     const response = await movieService.getMovieById(req.params.id);
 
     if (response.err) {
-      errResponseBody.err = response.err;
-      return res.status(response.code).json(errResponseBody);
+      return res.status(response.code).json({
+        success: false,
+        message: response.err,
+        data: {},
+        error: {},
+      });
     }
 
-    successResponseBody.data = response;
-    return res.status(200).json(successResponseBody);
+    return res.status(200).json({
+      success: true,
+      message: "Movie fetched successfully",
+      data: response,
+      error: {},
+    });
   } catch (error) {
-    return res.status(500).json(errResponseBody);
+    console.log("Error in fetching movie:", error);
+
+    // Handle CastError (invalid ObjectId)
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid movie ID format. Please provide a valid movie ID.",
+        data: {},
+        error: {},
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error while fetching movie",
+      data: {},
+      error: {},
+    });
   }
 };
 
@@ -52,7 +98,8 @@ const getAllMovies = async (req, res) => {
 const updateMovie = async (req, res) => {
   try {
     const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+      new: true, // this is used to return the updated document, else it will return the old doc with just updates applied
+      runValidators: true, // this will run the validators defined in the schema on update
     });
     if (!movie) {
       return res.status(404).json({
@@ -62,9 +109,49 @@ const updateMovie = async (req, res) => {
         error: {},
       });
     }
-    return res.status(200).json(successResponseBody);
+    return res.status(200).json({
+      success: true,
+      message: "Movie updated successfully",
+      data: movie,
+      error: {},
+    });
   } catch (error) {
-    return res.status(500).json(errResponseBody);
+    console.log("Error in updating movie:", error);
+
+    // Handle validation errors
+    if (error.name === "ValidationError") {
+      const validationErrors = {};
+      Object.keys(error.errors).forEach((key) => {
+        validationErrors[key] = error.errors[key].message;
+      });
+
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        data: {},
+        error: {
+          type: "ValidationError",
+          fields: validationErrors,
+        },
+      });
+    }
+
+    // Handle CastError (invalid ObjectId)
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid movie ID format",
+        data: {},
+        error: {},
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error while updating movie",
+      data: {},
+      error: {},
+    });
   }
 };
 
