@@ -23,8 +23,8 @@ const validateMovieCreateRequest = (req, res, next) => {
   }
   if (
     !req.body.casts ||
-    req.body.casts instanceof Array ||
-    !req.body.casts.length > 0
+    !(req.body.casts instanceof Array) ||
+    req.body.casts.length === 0
   ) {
     badRequestResponse.error = "Movie casts are required";
     return res.status(400).json(badRequestResponse);

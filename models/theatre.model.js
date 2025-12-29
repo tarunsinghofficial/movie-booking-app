@@ -20,6 +20,10 @@ const theatreSchema = new mongoose.Schema(
       minLength: [6, "Pin code must be at least 6 characters long"],
       trim: true,
     },
+    movies: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Movie",
+    },
   },
   { timestamps: true }
 );
