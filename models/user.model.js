@@ -39,6 +39,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// encrypt the password before the user is saved to the database
 userSchema.pre("save", async function () {
   // a trigger to encrypt the password before the user is saved to the database
   //console.log(this);
@@ -47,6 +48,9 @@ userSchema.pre("save", async function () {
   this.password = hash;
   //console.log(this);
 });
+
+// compare the password with the encrypted password
+//userSchema.compare()
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
