@@ -9,11 +9,13 @@ app.use(express.json());
 
 const MovieRoutes = require("./routes/movie.routes");
 const TheatreRoutes = require("./routes/theatre.routes");
+const AuthRoutes = require("./routes/auth.routes");
 
 const PORT = process.env.PORT || 3000;
 
 MovieRoutes(app); // invoking the routes function and passing app object
 TheatreRoutes(app);
+AuthRoutes(app);
 
 app.listen(PORT, async () => {
   console.log(`Server is Running on ${PORT}`);
